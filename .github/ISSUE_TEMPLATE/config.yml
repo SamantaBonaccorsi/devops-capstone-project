@@ -1,3 +1,6 @@
+yaml
+
+---
 blank_issues_enabled: false
 default: user_story.md
 contact_links:
