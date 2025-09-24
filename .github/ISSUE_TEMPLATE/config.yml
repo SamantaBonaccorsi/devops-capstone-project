@@ -1,0 +1,6 @@
+blank_issues_enabled: false
+default: user_story.md
+contact_links:
+  - name: 'Support Team'
+    url: 'https://mywebsite.com/support'
+    about: 'Reach out for more help with issues.'
