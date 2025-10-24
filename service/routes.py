@@ -63,12 +63,30 @@ def create_accounts():
 
 # ... place you code here to LIST accounts ...
 
-
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
 
-# ... place you code here to READ an account ...
+@app.route("/accounts/<int:id>", methods=["GET"])
+def read_an_account(id):
+    """
+    Read an Account
+    This endpoint will read an Account based on the path param id
+    """
+    logging.info(f"VALORE ID ROUTES {id}")
+        
+    account = Account()
+    found = account.find(id)
+    message = found.serialize()
+    
+    if (found):
+        return make_response(
+        jsonify(message), status.HTTP_200_OK
+        )
+    else:
+        return make_response(
+        jsonify(message), status.HTTP_404_NOT_FOUND
+        )
 
 
 ######################################################################

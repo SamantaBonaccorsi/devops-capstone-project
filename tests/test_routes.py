@@ -139,9 +139,10 @@ class TestAccountService(TestCase):
         # check if account created
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         account.id = response.get_json()["id"]
-
+        logging.info(f"VALORE ID TEST ROUTES {account.id}")
         # try to read
         response = self.client.get("/accounts/{account.id}")
+        
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_account = response.get_json()
         
