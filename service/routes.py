@@ -5,6 +5,7 @@ This microservice handles the lifecycle of Accounts
 """
 # pylint: disable=unused-import
 from flask import jsonify, request, make_response, abort, url_for   # noqa; F401
+import logging
 from service.models import Account
 from service.common import status  # HTTP Status Codes
 from . import app  # Import Flask application
@@ -87,7 +88,6 @@ def read_an_account(id):
         return make_response(
         jsonify(message), status.HTTP_404_NOT_FOUND
         )
-
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT

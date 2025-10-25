@@ -141,17 +141,17 @@ class TestAccountService(TestCase):
         account.id = response.get_json()["id"]
         logging.info(f"VALORE ID TEST ROUTES {account.id}")
         # try to read
-        response = self.client.get("/accounts/{account.id}")
+        response = self.client.get(f"{BASE_URL}/{account.id}")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        new_account = response.get_json()
+        new_account = account.deserialize(response.get_json())
         
         self.assertTrue(
             account.id == new_account.id
-            and account.name == new_account.NameError
+            and account.name == new_account.name
             and account.email == new_account.email
             and account.address == new_account.address
             and account.phone_number == new_account.phone_number
             and account.date_joined == new_account.date_joined
         )
-
+        #logging.info(f"{new_account}")
