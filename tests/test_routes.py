@@ -126,7 +126,7 @@ class TestAccountService(TestCase):
     # ADD YOUR TEST CASES HERE ...
 
     def test_read_account(self):
-        """It should read the account just created"""
+        """It should read the account"""
         # create an account
         accounts = self._create_accounts(1)
         account = accounts[0]
@@ -154,4 +154,41 @@ class TestAccountService(TestCase):
             and account.phone_number == new_account.phone_number
             and account.date_joined == new_account.date_joined
         )
-        #logging.info(f"{new_account}")
+    
+    def test_read_account_not_found(self):
+        """If no account found It should return HTTP_404_NOT_FOUND"""
+        # try to read
+        response = self.client.get(f"{BASE_URL}/{999999}")
+        
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+      
+    def test_list_all_account(self):
+        """It should list all the accounts created"""
+        # create 10 account
+        accounts = self._create_accounts(10)
+        
+        for account in accounts:
+            response = self.client.post(
+                BASE_URL,
+                json = account.serialize(),
+                content_type = "application/json"
+            )
+            # check if account created
+            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+            
+        # try to read
+        response = self.client.get(BASE_URL)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        account_list = response.get_json()
+        
+        self.assertTrue(len(account_list) == 10)
+
+        for i in range(len(account_list)):
+            self.assertTrue(
+            account.id == account_list[i].id
+            and accounts[i].name == account_list[i].NameError
+            and accounts[i].email == account_list[i].email
+            and accounts[i].address == account_list[i].address
+            and accounts[i].phone_number == account_list[i].phone_number
+            and accounts[i].date_joined == account_list[i].date_joined
+            )

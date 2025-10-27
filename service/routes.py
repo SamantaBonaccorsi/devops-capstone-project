@@ -62,7 +62,22 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# ... place you code here to LIST accounts ...
+@app.route("/accounts", methods=["GET"])
+def list_all_account():
+    """
+    List all the account
+    """
+    app.logger.info("Request to list all the Accounts")
+    accounts = Account()
+    list = accounts.all()
+
+    if (list):
+        for account in list:
+            message = account.serialize()
+            return make_response(
+            jsonify(message), status.HTTP_200_OK, 
+            )
+
 
 ######################################################################
 # READ AN ACCOUNT
@@ -78,15 +93,15 @@ def read_an_account(id):
         
     account = Account()
     found = account.find(id)
-    message = found.serialize()
     
     if (found):
+        message = found.serialize()
         return make_response(
         jsonify(message), status.HTTP_200_OK
         )
     else:
         return make_response(
-        jsonify(message), status.HTTP_404_NOT_FOUND
+        "Not Found", status.HTTP_404_NOT_FOUND
         )
 
 ######################################################################
