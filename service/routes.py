@@ -4,6 +4,7 @@ Account Service
 This microservice handles the lifecycle of Accounts
 """
 # pylint: disable=unused-import
+import json
 from flask import jsonify, request, make_response, abort, url_for   # noqa; F401
 import logging
 from service.models import Account
@@ -70,13 +71,21 @@ def list_all_account():
     app.logger.info("Request to list all the Accounts")
     accounts = Account()
     list = accounts.all()
+    
+    # Converte ogni oggetto in un dizionario
+    result = []
+    for account in list:
+        result.append({
+           "id": account.id,
+            "name": account.name,
+            "email": account.email,
+            "address": account.address,
+            "phone_number": account.phone_number,
+            "date_joined": account.date_joined.isoformat()
+        })
 
-    if (list):
-        for account in list:
-            message = account.serialize()
-            return make_response(
-            jsonify(message), status.HTTP_200_OK, 
-            )
+    # Restituisce la lista in formato JSON
+    return jsonify(result)
 
 
 ######################################################################
