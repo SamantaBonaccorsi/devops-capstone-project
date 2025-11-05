@@ -32,9 +32,11 @@ class TestAccountService(TestCase):
         app.config["TESTING"] = True
         app.config["DEBUG"] = False
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
-        app.logger.setLevel(logging.CRITICAL)
-        init_db(app)
+        app.logger.setLevel(logging.INFO)
 
+        logging.basicConfig(level=logging.INFO)
+        init_db(app)
+        
     @classmethod
     def tearDownClass(cls):
         """Runs once before test suite"""
@@ -109,7 +111,7 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
 
     def test_bad_request(self):
-        """It should not Create an Account when sending the wrong data"""
+        """It should return error 400 Bad Request"""
         response = self.client.post(BASE_URL, json={"name": "not enough data"})
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
@@ -139,13 +141,16 @@ class TestAccountService(TestCase):
         # check if account created
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         account.id = response.get_json()["id"]
-        logging.info(f"VALORE ID TEST ROUTES {account.id}")
+
         # try to read
         response = self.client.get(f"{BASE_URL}/{account.id}")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_account = account.deserialize(response.get_json())
-        
+
+        logging.info(f"Test read_an_account - Account creato {account.name}")
+        logging.info(f"Test read_an_account - Account letto {new_account.name}")
+                
         self.assertTrue(
             account.id == new_account.id
             and account.name == new_account.name
@@ -159,7 +164,7 @@ class TestAccountService(TestCase):
         """If no account found It should return HTTP_404_NOT_FOUND"""
         # try to read
         response = self.client.get(f"{BASE_URL}/{999999}")
-        
+        logging.info(f"Test test_read_account_not_found {response.status_code}")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
       
     def test_list_all_account(self):
@@ -168,6 +173,7 @@ class TestAccountService(TestCase):
         accounts = self._create_accounts(10)
         
         for account in accounts:
+            logging.info(f"Test test_list_all_account - Account creato {account.name}")
             response = self.client.post(
                 BASE_URL,
                 json = account.serialize(),
@@ -182,9 +188,12 @@ class TestAccountService(TestCase):
         
         account_list = response.get_json()
         logging.info(f"Lunghezza lista {len(account_list)}")
-        for account in account_list:
-            logging.info(f'name: {account["name"]} - email: {account["email"]} - address: {account["address"]} - phone: {account["phone_number"]} - date-joined: {account["date_joined"]}')
+        self.assertTrue(len(account_list) >= 10)
+        
+        #for account in account_list:
+        #    logging.info(f'name: {account["name"]} - email: {account["email"]} - address: {account["address"]} - phone: {account["phone_number"]} - date-joined: {account["date_joined"]}')
 
+        
         # for i in range(len(account_list)):
         #     self.assertTrue(
         #     account.id == account_list[i].id
