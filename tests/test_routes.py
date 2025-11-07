@@ -190,16 +190,32 @@ class TestAccountService(TestCase):
         logging.info(f"Lunghezza lista {len(account_list)}")
         self.assertTrue(len(account_list) >= 10)
         
-        #for account in account_list:
-        #    logging.info(f'name: {account["name"]} - email: {account["email"]} - address: {account["address"]} - phone: {account["phone_number"]} - date-joined: {account["date_joined"]}')
+    def test_update_account(self):
+        """It should Update an Account"""
+        accounts = self._create_accounts(1)
+        response = self.client.post(
+            BASE_URL,
+            json=accounts[0].serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
+        # Overwrite the account with new data
+        # And give it the id of the first account created
+        account = AccountFactory()
+        account.id = response.get_json()["id"]
+
+        response = self.client.put(
+            BASE_URL,
+            json = account.serialize(),
+            content_type = "application/json"
+        )
         
-        # for i in range(len(account_list)):
-        #     self.assertTrue(
-        #     account.id == account_list[i].id
-        #     and accounts[i].name == account_list[i].NameError
-        #     and accounts[i].email == account_list[i].email
-        #     and accounts[i].address == account_list[i].address
-        #     and accounts[i].phone_number == account_list[i].phone_number
-        #     and accounts[i].date_joined == account_list[i].date_joined
-        #     )
+        # Check the data is correct
+        new_account = response.get_json()
+        logging.info(new_account)
+        self.assertEqual(new_account["name"], account.name)
+        self.assertEqual(new_account["email"], account.email)
+        self.assertEqual(new_account["address"], account.address)
+        self.assertEqual(new_account["phone_number"], account.phone_number)
+        self.assertEqual(new_account["date_joined"], str(account.date_joined))
