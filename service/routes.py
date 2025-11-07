@@ -4,6 +4,7 @@ Account Service
 This microservice handles the lifecycle of Accounts
 """
 # pylint: disable=unused-import
+import json
 from flask import jsonify, request, make_response, abort, url_for   # noqa; F401
 import logging
 from service.models import Account
@@ -62,7 +63,30 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
-# ... place you code here to LIST accounts ...
+@app.route("/accounts", methods=["GET"])
+def list_all_account():
+    """
+    List all the account
+    """
+    app.logger.info("Request to list all the Accounts")
+    accounts = Account()
+    list = accounts.all()
+    
+    # Converte ogni oggetto in un dizionario
+    result = []
+    for account in list:
+        result.append({
+           "id": account.id,
+            "name": account.name,
+            "email": account.email,
+            "address": account.address,
+            "phone_number": account.phone_number,
+            "date_joined": account.date_joined.isoformat()
+        })
+
+    # Restituisce la lista in formato JSON
+    return jsonify(result)
+
 
 ######################################################################
 # READ AN ACCOUNT
@@ -78,15 +102,15 @@ def read_an_account(id):
         
     account = Account()
     found = account.find(id)
-    message = found.serialize()
     
     if (found):
+        message = found.serialize()
         return make_response(
         jsonify(message), status.HTTP_200_OK
         )
     else:
         return make_response(
-        jsonify(message), status.HTTP_404_NOT_FOUND
+        "Not Found", status.HTTP_404_NOT_FOUND
         )
 
 ######################################################################
