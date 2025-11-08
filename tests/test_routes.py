@@ -210,7 +210,7 @@ class TestAccountService(TestCase):
             json = account.serialize(),
             content_type = "application/json"
         )
-        
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check the data is correct
         new_account = response.get_json()
         logging.info(new_account)
@@ -255,3 +255,4 @@ class TestAccountService(TestCase):
             f"{BASE_URL}/{999999}"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        
