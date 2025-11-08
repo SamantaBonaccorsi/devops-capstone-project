@@ -206,7 +206,7 @@ class TestAccountService(TestCase):
         account.id = response.get_json()["id"]
 
         response = self.client.put(
-            BASE_URL,
+            f"{BASE_URL}/{account.id}",
             json = account.serialize(),
             content_type = "application/json"
         )
@@ -219,3 +219,14 @@ class TestAccountService(TestCase):
         self.assertEqual(new_account["address"], account.address)
         self.assertEqual(new_account["phone_number"], account.phone_number)
         self.assertEqual(new_account["date_joined"], str(account.date_joined))
+
+    def test_update_account_not_found(self):
+        """It should fail with HTTP_404_NOT_FOUND status"""
+        # l’oggetto con un certo ID non è presente nel database.
+        accounts = self._create_accounts(1)
+        response = self.client.put(
+            f"{BASE_URL}/{9999999}",
+            json=accounts[0].serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
