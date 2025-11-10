@@ -85,7 +85,7 @@ def list_all_account():
         })
 
     # Restituisce la lista in formato JSON
-    return jsonify(result)
+    return jsonify(result), status.HTTP_200_OK
 
 
 ######################################################################
@@ -103,15 +103,24 @@ def read_an_account(id):
     account = Account()
     found = account.find(id)
     
-    if (found):
-        message = found.serialize()
-        return make_response(
+    if (not found):
+        abort(status.HTTP_404_NOT_FOUND,f"Account with id [{id}] could not be found." )
+
+    message = found.serialize()
+    return make_response(
         jsonify(message), status.HTTP_200_OK
-        )
-    else:
-        return make_response(
-        "Not Found", status.HTTP_404_NOT_FOUND
-        )
+    )
+        
+    # return account.serialize(), status.HTTP_200_OK
+    # Questa è una forma semplificata che Flask supporta.
+    # Qui Flask capisce che:
+
+    # Il primo elemento è il corpo della risposta,
+    # Il secondo è lo status code.
+    # Ma attenzione:
+    # Flask non applica automaticamente jsonify.
+    # Se account.serialize() è un dizionario, Flask lo convertirà in JSON solo se la @app.route o la Blueprint è gestita da un @app.route(..., jsonify=True) (solo in Flask ≥ 2.2).
+    # Altrimenti, il contenuto sarà convertito in stringa Python, non JSON vero e proprio.
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
@@ -133,7 +142,6 @@ def update_an_account(id):
     
     if (found):
         account.deserialize(request.get_json())
-        account.id = id
         account.update()
         message = account.serialize()
         return make_response(
