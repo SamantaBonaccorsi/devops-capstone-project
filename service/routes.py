@@ -149,7 +149,25 @@ def update_an_account(id):
 # DELETE AN ACCOUNT
 ######################################################################
 
-# ... place you code here to DELETE an account ...
+@app.route("/accounts/<int:id>", methods=["DELETE"])
+def delete_an_account(id):
+    """
+    Read an Account
+    This endpoint will read an Account based on the path param id
+    """
+    logging.info(f"VALORE ID ROUTES DA CANCELLARE {id}")
+        
+    account = Account()
+    found = account.find(id)
+    
+    if (found):
+        found.delete()
+        return make_response("", status.HTTP_204_NO_CONTENT
+        )
+    else:
+        return make_response(
+            "Not Found", status.HTTP_404_NOT_FOUND
+        )
 
 
 ######################################################################
