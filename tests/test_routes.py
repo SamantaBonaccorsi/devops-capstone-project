@@ -133,17 +133,9 @@ class TestAccountService(TestCase):
         accounts = self._create_accounts(1)
         account = accounts[0]
 
-        response = self.client.post(
-                BASE_URL,
-                json = account.serialize(),
-                content_type = "application/json"
-        )
-        # check if account created
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        account.id = response.get_json()["id"]
-
         # try to read
-        response = self.client.get(f"{BASE_URL}/{account.id}")
+        response = self.client.get(f"{BASE_URL}/{account.id}",
+            content_type="application/json")
         
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_account = account.deserialize(response.get_json())
@@ -172,16 +164,6 @@ class TestAccountService(TestCase):
         # create 10 account
         accounts = self._create_accounts(10)
         
-        for account in accounts:
-            logging.info(f"Test test_list_all_account - Account creato {account.name}")
-            response = self.client.post(
-                BASE_URL,
-                json = account.serialize(),
-                content_type = "application/json"
-            )
-            # check if account created
-            self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-            
         # try to read
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -192,10 +174,10 @@ class TestAccountService(TestCase):
         
     def test_update_account(self):
         """It should Update an Account"""
-        accounts = self._create_accounts(1)
+        account = AccountFactory()
         response = self.client.post(
             BASE_URL,
-            json=accounts[0].serialize(),
+            json=account.serialize(),
             content_type="application/json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -234,14 +216,8 @@ class TestAccountService(TestCase):
     def test_delete_account(self):
         """It should Delete an Account"""
         accounts = self._create_accounts(1)
-        response = self.client.post(
-            BASE_URL,
-            json=accounts[0].serialize(),
-            content_type="application/json"
-        )
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         # get the id
-        id = response.get_json()["id"]
+        id = accounts[0].id
         logging.info(f"Id da eliminare: {id}")
         response = self.client.delete(
             f"{BASE_URL}/{id}"
