@@ -167,7 +167,7 @@ def delete_an_account(id):
     This endpoint will read an Account based on the path param id
     """
     logging.info(f"VALORE ID ROUTES DA CANCELLARE {id}")
-    
+
     account = Account()
     found = account.find(id)
 
@@ -176,8 +176,7 @@ def delete_an_account(id):
         return make_response("", status.HTTP_204_NO_CONTENT)
     else:
         return make_response(
-            "Not Found", status.HTTP_404_NOT_FOUND
-    )
+            "Not Found", status.HTTP_404_NOT_FOUND)
 
 
 ######################################################################
