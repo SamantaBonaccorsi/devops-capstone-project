@@ -99,7 +99,7 @@ def read_an_account(id):
     This endpoint will read an Account based on the path param id
     """
     logging.info(f"VALORE ID ROUTES {id}")
-  
+
     account = Account()
     found = account.find(id)
 
@@ -110,7 +110,7 @@ def read_an_account(id):
     return make_response(
         jsonify(message), status.HTTP_200_OK
     )
-        
+     
     # return account.serialize(), status.HTTP_200_OK
     # Questa è una forma semplificata che Flask supporta.
     # Qui Flask capisce che:
@@ -119,12 +119,14 @@ def read_an_account(id):
     # Il secondo è lo status code.
     # Ma attenzione:
     # Flask non applica automaticamente jsonify.
-    # Se account.serialize() è un dizionario, Flask lo convertirà in JSON solo se la @app.route o la Blueprint è gestita da un @app.route(..., jsonify=True) (solo in Flask ≥ 2.2).
+    # Se account.serialize() è un dizionario, Flask lo convertirà in JSON solo se la @app.route 
+    # o la Blueprint è gestita da un @app.route(..., jsonify=True) (solo in Flask ≥ 2.2).
     # Altrimenti, il contenuto sarà convertito in stringa Python, non JSON vero e proprio.
 
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+
 
 @app.route("/accounts/<int:id>", methods=["PUT"])
 def update_an_account(id):
@@ -134,12 +136,12 @@ def update_an_account(id):
     """
     app.logger.info("Request to update an Account")
     check_content_type("application/json")
-    
+
     logging.info(f"VALORE ID ROUTES DA AGGIORNARE {id}")
-        
+
     account = Account()
     found = account.find(id)
-    
+
     if (found):
         account.deserialize(request.get_json())
         account.update()
