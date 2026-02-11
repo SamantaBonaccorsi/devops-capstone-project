@@ -4,7 +4,6 @@ Account Service
 This microservice handles the lifecycle of Accounts
 """
 # pylint: disable=unused-import
-import json
 from flask import jsonify, request, make_response, abort, url_for   # noqa; F401
 import logging
 from service.models import Account
@@ -63,6 +62,7 @@ def create_accounts():
 # LIST ALL ACCOUNTS
 ######################################################################
 
+
 @app.route("/accounts", methods=["GET"])
 def list_all_account():
     """
@@ -71,17 +71,17 @@ def list_all_account():
     app.logger.info("Request to list all the Accounts")
     accounts = Account()
     list = accounts.all()
-    
+
     # Converte ogni oggetto in un dizionario
     result = []
     for account in list:
         result.append({
            "id": account.id,
-            "name": account.name,
-            "email": account.email,
-            "address": account.address,
-            "phone_number": account.phone_number,
-            "date_joined": account.date_joined.isoformat()
+           "name": account.name,
+           "email": account.email,
+           "address": account.address,
+           "phone_number": account.phone_number,
+           "date_joined": account.date_joined.isoformat()
         })
 
     # Restituisce la lista in formato JSON
@@ -99,12 +99,12 @@ def read_an_account(id):
     This endpoint will read an Account based on the path param id
     """
     logging.info(f"VALORE ID ROUTES {id}")
-        
+  
     account = Account()
     found = account.find(id)
-    
+
     if (not found):
-        abort(status.HTTP_404_NOT_FOUND,f"Account with id [{id}] could not be found." )
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{id}] could not be found.")
 
     message = found.serialize()
     return make_response(
@@ -164,18 +164,18 @@ def delete_an_account(id):
     This endpoint will read an Account based on the path param id
     """
     logging.info(f"VALORE ID ROUTES DA CANCELLARE {id}")
-        
+    
     account = Account()
     found = account.find(id)
-    
+
     if (found):
         found.delete()
         return make_response("", status.HTTP_204_NO_CONTENT
-        )
+    )
     else:
         return make_response(
             "Not Found", status.HTTP_404_NOT_FOUND
-        )
+    )
 
 
 ######################################################################
