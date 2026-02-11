@@ -110,7 +110,7 @@ def read_an_account(id):
     return make_response(
         jsonify(message), status.HTTP_200_OK
     )
-     
+
     # return account.serialize(), status.HTTP_200_OK
     # Questa è una forma semplificata che Flask supporta.
     # Qui Flask capisce che:
@@ -119,7 +119,7 @@ def read_an_account(id):
     # Il secondo è lo status code.
     # Ma attenzione:
     # Flask non applica automaticamente jsonify.
-    # Se account.serialize() è un dizionario, Flask lo convertirà in JSON solo se la @app.route 
+    # Se account.serialize() è un dizionario, Flask lo convertirà in JSON solo se la @app.route
     # o la Blueprint è gestita da un @app.route(..., jsonify=True) (solo in Flask ≥ 2.2).
     # Altrimenti, il contenuto sarà convertito in stringa Python, non JSON vero e proprio.
 
@@ -159,6 +159,7 @@ def update_an_account(id):
 # DELETE AN ACCOUNT
 ######################################################################
 
+
 @app.route("/accounts/<int:id>", methods=["DELETE"])
 def delete_an_account(id):
     """
@@ -172,8 +173,7 @@ def delete_an_account(id):
 
     if (found):
         found.delete()
-        return make_response("", status.HTTP_204_NO_CONTENT
-    )
+        return make_response("", status.HTTP_204_NO_CONTENT)
     else:
         return make_response(
             "Not Found", status.HTTP_404_NOT_FOUND
