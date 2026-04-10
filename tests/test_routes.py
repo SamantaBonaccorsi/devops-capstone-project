@@ -36,7 +36,7 @@ class TestAccountService(TestCase):
 
         logging.basicConfig(level=logging.INFO)
         init_db(app)
-        
+
     @classmethod
     def tearDownClass(cls):
         """Runs once before test suite"""
@@ -117,15 +117,14 @@ class TestAccountService(TestCase):
         account = accounts[0]
 
         # try to read
-        response = self.client.get(f"{BASE_URL}/{account.id}",
-            content_type="application/json")
-        
+        response = self.client.get(f"{BASE_URL}/{account.id}", content_type="application/json")
+
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         new_account = account.deserialize(response.get_json())
 
         logging.info(f"Test read_an_account - Account creato {account.name}")
         logging.info(f"Test read_an_account - Account letto {new_account.name}")
-                
+
         self.assertTrue(
             account.id == new_account.id
             and account.name == new_account.name
@@ -138,16 +137,16 @@ class TestAccountService(TestCase):
     def test_list_all_account(self):
         """It should list all the accounts created"""
         # create 10 account
-        accounts = self._create_accounts(10)
-        
+        self._create_accounts(10)
+
         # try to read
         response = self.client.get(BASE_URL)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
+
         account_list = response.get_json()
         logging.info(f"Lunghezza lista {len(account_list)}")
         self.assertTrue(len(account_list) >= 10)
-        
+
     def test_update_account(self):
         """It should Update an Account"""
         account = AccountFactory()
@@ -165,8 +164,8 @@ class TestAccountService(TestCase):
 
         response = self.client.put(
             f"{BASE_URL}/{account.id}",
-            json = account.serialize(),
-            content_type = "application/json"
+            json=account.serialize(),
+            content_type="application/json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         # Check the data is correct
@@ -189,7 +188,7 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
 
-    def test_delete_account_not_exists(self):  
+    def test_delete_account_not_exists(self):
         """It should return HTTP_404_NOT_FOUND """
         logging.info(f"Id da eliminare: {9999999}")
         response = self.client.delete(

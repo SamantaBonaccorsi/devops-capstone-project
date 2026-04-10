@@ -9,7 +9,6 @@ Test cases can be run with the following:
 """
 import os
 import logging
-import unittest
 from unittest import TestCase
 from tests.factories import AccountFactory
 from service.common import status  # HTTP Status Codes
@@ -39,7 +38,7 @@ class TestAccountService(TestCase):
 
         logging.basicConfig(level=logging.INFO)
         init_db(app)
-        
+
     @classmethod
     def tearDownClass(cls):
         """Runs once before test suite"""
@@ -93,14 +92,14 @@ class TestAccountService(TestCase):
             content_type="test/html"
         )
         self.assertEqual(response.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
-  
+
     def test_read_account_not_found(self):
         """If no account found It should return HTTP_404_NOT_FOUND"""
         # try to read
         response = self.client.get(f"{BASE_URL}/{999999}")
         logging.info(f"Test test_read_account_not_found {response.status_code}")
-        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)     
- 
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
     def test_update_account_not_found(self):
         """It should fail with HTTP_404_NOT_FOUND status"""
         # l’oggetto con un certo ID non è presente nel database.
@@ -112,14 +111,14 @@ class TestAccountService(TestCase):
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
-    def test_delete_account_not_exists(self):  
+    def test_delete_account_not_exists(self):
         """It should return HTTP_404_NOT_FOUND """
         logging.info(f"Id da eliminare: {9999999}")
         response = self.client.delete(
             f"{BASE_URL}/{999999}"
         )
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_method_not_allowed(self):
         """ It should return HTTP_405_METHOD_NOT_ALLOWED """
         response = self.client.delete(BASE_URL)
